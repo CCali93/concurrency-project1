@@ -9,10 +9,9 @@ public class TeamLead extends Thread {
     private Manager manager;
     private MeetingRoom conferenceRoom;
 
-    public TeamLead(Manager manager) {
-        super();
+    public TeamLead(String manager) {
+        super(manager);
 
-        this.manager = manager;
     }
 
     public void run() {
@@ -21,5 +20,12 @@ public class TeamLead extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setManager(Manager manager) {
+        this.manager = manager;
+    }
+
+    public void addDeveloper(Developer d) {
     }
 }
