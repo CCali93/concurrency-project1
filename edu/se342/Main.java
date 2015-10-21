@@ -10,11 +10,11 @@ public class Main {
 
     public static void main(String[] args) {
         List<TeamLead> leads = new ArrayList<>(); // List of Team Leads
-        Manager pm = new Manager(); //Create Manager
+        Manager pm = new Manager(null); //Create Manager
 
         // Create Team Leaders
         for (int i = 0; i < 3; i++) {
-            TeamLead leader = new TeamLead("TeamLead " + (i + 1) + 1); // TeamLead (Team, EmployeeNumber)
+            TeamLead leader = new TeamLead("TeamLead " + (i + 1) + 1, null); // TeamLead (Team, EmployeeNumber)
             leader.setManager(pm);
             leads.add(leader);
 
@@ -25,9 +25,8 @@ public class Main {
                 dev.setTeamLead(leader);
                 leader.addDeveloper(dev);
             }
+
+            pm.addTeamLead(leader);
         }
-
-        pm.setTeamLeaders(leads);  // Set team leads
-
     }
 }

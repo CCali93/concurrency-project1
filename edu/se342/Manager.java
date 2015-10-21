@@ -1,5 +1,6 @@
 package edu.se342;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -9,20 +10,31 @@ import java.util.concurrent.CountDownLatch;
 public class Manager extends Thread {
     private CountDownLatch office;
     private List<TeamLead> teamLeaders;
+    private MeetingRoom conferenceRoom;
 
-    public Manager() {
+    public Manager(MeetingRoom conferenceRoom) {
+        super();
         this.office = new CountDownLatch(4);
+        this.teamLeaders = new ArrayList<TeamLead>();
+
+        this.conferenceRoom = conferenceRoom;
     }
 
     public void run() {
+        try {
+            arriveForMorningStandup();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
-    public synchronized CountDownLatch getOffice() {
-        return this.office;
+    public synchronized void arriveForMorningStandup() throws InterruptedException {
+        this.office.await();
     }
 
-    public void setTeamLeaders(List<TeamLead> teamLeaders) {
-        this.teamLeaders = teamLeaders;
+    public void addTeamLead(TeamLead teamLead) {
+        this.teamLeaders.add(teamLead);
     }
 }

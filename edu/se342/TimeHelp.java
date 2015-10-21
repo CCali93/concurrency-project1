@@ -8,6 +8,7 @@ package edu.se342;
 public enum TimeHelp {
 
     MINUTE(10),
+    FIFTEEN_MINUTES(150),
     HOUR(600),
     HALF_HOUR(300),
     FULL_DAY(4800);
