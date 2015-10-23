@@ -1,6 +1,5 @@
 package edu.se342;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
@@ -19,7 +18,7 @@ public class Manager extends Leader<TeamLead> {
     public Manager(MeetingRoom conferenceRoom, CountDownLatch arriveAtWork) {
         super("", arriveAtWork);
         this.office = new CountDownLatch(4);
-        this.teamLeaders = new ArrayList<TeamLead>();
+        this.teamLeaders = new ArrayList<>();
 
         this.conferenceRoom = conferenceRoom;
 

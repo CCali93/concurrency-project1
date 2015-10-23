@@ -41,4 +41,6 @@ public class MeetingRoom {
     public synchronized void arriveInRoom() throws BrokenBarrierException, InterruptedException {
         waitingForMeeting.await();
     }
+
+
 }
