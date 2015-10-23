@@ -15,8 +15,8 @@ public class Manager extends Leader<TeamLead> {
 
     private int elapsedTime;
 
-    public Manager(MeetingRoom conferenceRoom) {
-        super("");
+    public Manager(MeetingRoom conferenceRoom, CountDownLatch arriveAtWork) {
+        super("", arriveAtWork);
         this.office = new CountDownLatch(4);
         this.teamLeaders = new ArrayList<>();
 
@@ -26,6 +26,8 @@ public class Manager extends Leader<TeamLead> {
     }
 
     public void run() {
+        super.run();
+
         System.out.println("Project Manager has arrived.");
 
         this.office.countDown();
@@ -98,16 +100,6 @@ public class Manager extends Leader<TeamLead> {
 
             elapseTime(TimeHelp.MINUTE.ms());
         }
-    }
-
-    private void elapseTime(int milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        this.elapsedTime += milliseconds;
     }
 
     @Override
