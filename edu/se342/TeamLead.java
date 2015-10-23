@@ -1,78 +1,49 @@
 package edu.se342;
 
+import java.util.List;
+
 import java.util.concurrent.BrokenBarrierException;
 
-<<<<<<< HEAD
-=======
-import java.sql.Time;
-import java.util.List;
->>>>>>> Create workflow for TeamLead
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.ArrayList;
 
 /**
  * Created by curtis on 10/16/15.
  */
 public class TeamLead extends Leader<Developer> {
-    private CountDownLatch teamArrival;
+    private final CountDownLatch teamArrival;
+    private int teamNumber;
     private Manager manager;
     private MeetingRoom conferenceRoom;
     private List<Developer> myDevs;
 
-    public TeamLead(String leadName, MeetingRoom conferenceRoom, CountDownLatch arriveAtWork) {
-        super(leadName, arriveAtWork);
+    public TeamLead(String leadName, MeetingRoom conferenceRoom) {
+        super(leadName);
         this.conferenceRoom = conferenceRoom;
-
         teamArrival = new CountDownLatch(4);
+
+        this.myDevs = new ArrayList<>();
     }
 
     public void run() {
-        super.run();
-
-        int sleepTime = (int) (Math.random() * (TimeHelp.HALF_HOUR.ms() + 1));
-
-        elapseTime(sleepTime);
-
-        System.out.printf("%s has arrived at work\n", getName());
-
         try {
             manager.arriveForMorningStandup();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
 
-        System.out.printf("%s is in Morning Standup\n", getName());
-        elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
-        System.out.printf("%s has left Morning Standup\n", getName());
+    public void setManager(Manager manager) {
+        this.manager = manager;
+    }
 
-        teamArrival.countDown();
+    public void addDeveloper(Developer dev) {
+        this.myDevs.add(dev);
+    }
 
-        while (teamArrival.getCount() > 0) {
-            elapseTime(TimeHelp.MINUTE.ms());
-        }
-
-        conferenceRoom.reserve(4);
-        notifySubordinatesOfMeeting();
-        elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
-        conferenceRoom.leave();
-
-        performRegularTasks((int)(TimeHelp.HOUR.ms() * 4.5));
-
-        int breakTime = (int)((Math.random() * TimeHelp.HALF_HOUR.ms()) + TimeHelp.HALF_HOUR.ms());
-        System.out.printf("%s is taking a lunch break\n", getName());
-
-        elapseTime(breakTime);
-
-        System.out.printf("%s has returned from lunch break\n", getName());
-
-        performRegularTasks((int)(TimeHelp.HOUR.ms() * 8));
-
+    public void arriveForMeeting() {
         try {
-            conferenceRoom.arriveInRoom();
-        } catch (BrokenBarrierException e) {
-            e.printStackTrace();
+            wait();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -113,32 +84,6 @@ public class TeamLead extends Leader<Developer> {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-
-    }
-
-    private void performRegularTasks(int timeInMilliseconds) {
-        while(getElapsedTime() < timeInMilliseconds) {
-            Developer questionAsker = answerQuestion();
-
-            if (questionAsker != null) {
-                int probability = (int)((Math.random() * 1) + 1);
-
-                if (probability == 1) {
-                    System.out.printf(
-                        "%s has answered a question from %s\n",
-                        getName(),
-                        questionAsker.getName()
-                    );
-                } else {
-                    System.out.printf("%s cannot answer the question, %s asks the Project Manager");
-                    manager.requestAnswerForQuestion(this);
-                }
-            } else {
-                System.out.printf("%s is coding and testing\n", getName());
-            }
-
-            elapseTime(TimeHelp.MINUTE.ms());
         }
     }
 }

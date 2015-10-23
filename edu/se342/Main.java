@@ -2,7 +2,6 @@ package edu.se342;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by austin on 10/18/15.
@@ -10,19 +9,20 @@ import java.util.concurrent.CountDownLatch;
 public class Main {
 
     public static void main(String[] args) {
-        CountDownLatch startSignal = new CountDownLatch(13);
-        MeetingRoom conferenceRoom = new MeetingRoom();
-
-        Manager pm = new Manager(conferenceRoom, startSignal); //Create Manager
+        List<TeamLead> leads = new ArrayList<>(); // List of Team Leads
+        Manager pm = new Manager(null); //Create Manager
 
         // Create Team Leaders
-        for (int i = 0; i < 3; i++) {
-            TeamLead leader = new TeamLead("TeamLead " + (i + 1) + "1", conferenceRoom, startSignal); // TeamLead (Team, EmployeeNumber)
+        for (int i = 1; i <= 4; i++) {
+            TeamLead leader = new TeamLead("TeamLead " + i + 1, null); // TeamLead (Team, EmployeeNumber)
             leader.setManager(pm);
+            leads.add(leader);
+
+            pm.addTeamLead(leader);
+
             // Create developers for each lead
-            for (int j = 0; j < 3; j++) {
-                // Developer (Team, EmployeeNumber)
-                Developer dev = new Developer(String.format("Developer %d%d", (i + 1), (j + 2)));
+            for (int j = 2; j <= 4; j++) { // Developer number 2 - 4
+                Developer dev = new Developer("Developer " + i + j); // Developer (TeamNumber, EmployeeNumber)
                 dev.setTeamLead(leader);
                 leader.addDeveloper(dev);
             }
