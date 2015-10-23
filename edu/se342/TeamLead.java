@@ -1,7 +1,7 @@
 package edu.se342;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
 /**
@@ -9,15 +9,14 @@ import java.util.concurrent.BrokenBarrierException;
  */
 public class TeamLead extends Leader<Developer> {
     private int teamNumber;
-
     private Manager manager;
     private MeetingRoom conferenceRoom;
-    private List<Developer> developmentTeam;
+    private List<Developer> myDevs;
 
     public TeamLead(String leadName, MeetingRoom conferenceRoom) {
         super(leadName);
         this.conferenceRoom = conferenceRoom;
-        developmentTeam = new ArrayList<Developer>();
+        this.myDevs = new ArrayList<>();
     }
 
     public void run() {
@@ -32,13 +31,21 @@ public class TeamLead extends Leader<Developer> {
         this.manager = manager;
     }
 
-    public void addDeveloper(Developer d) {
-        this.developmentTeam.add(d);
+    public void addDeveloper(Developer dev) {
+        this.myDevs.add(dev);
+    }
+
+    public void arriveForMeeting() {
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void notifySubordinatesOfMeeting() {
-        for (Developer dev : developmentTeam) {
+        for (Developer dev : myDevs) {
             //TODO: tell devs to go to the conference room
         }
 
@@ -49,5 +56,6 @@ public class TeamLead extends Leader<Developer> {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 }

@@ -2,7 +2,6 @@ package edu.se342;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.SynchronousQueue;
 
 /**
  * Created by Curtis on 10/21/2015.
@@ -28,4 +27,5 @@ public abstract class Leader<T> extends Thread {
     protected T answerQuestion() {
         return this.questionsAsked.poll();
     }
+
 }
