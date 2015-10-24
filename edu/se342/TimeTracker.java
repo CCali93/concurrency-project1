@@ -26,13 +26,17 @@ public class TimeTracker {
         return (System.currentTimeMillis() - startTime);
     }
 
+    public static synchronized long getStartTime() {
+        return startTime;
+    }
+
     /**
      * Return the string value of a time, given how many milliseconds it is into the day
      *
      * @param time Milliseconds since start of day
      * @return string representation of time
      */
-    public static String timeToString(long time) {
+    public synchronized static String timeToString(long time) {
         String timePeriod; // Morning or night (AM/PM)
         String hourString; // Hours as a string
         String minuteString; // Minutes as a string
@@ -40,9 +44,9 @@ public class TimeTracker {
         long hour = ((time / TimeHelp.HOUR.ms()) + 8); // Hours passed since 8am start time
 
         if (hour > 11) { // Past noon
-            timePeriod = ("p.m.");
+            timePeriod = ("pm");
         } else { // Before noon
-            timePeriod = ("a.m.");
+            timePeriod = ("am");
         }
 
         if (hour > 12) {
@@ -54,7 +58,11 @@ public class TimeTracker {
         int minutes = (int) ((time % TimeHelp.HOUR.ms()) / TimeHelp.MINUTE.ms()); // Strip hours, get minutes
         minuteString = String.format("%02d", minutes);
 
-        return (hourString + ":" + minuteString + " " + timePeriod); // hour:minutes am/pm
+        return (hourString + ":" + minuteString + "" + timePeriod); // hour:minutes am/pm
+    }
+
+    public synchronized static String currentTimeToString() {
+        return timeToString(getCurrentTime());
     }
 
     /**

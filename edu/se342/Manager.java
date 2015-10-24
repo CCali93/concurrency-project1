@@ -1,6 +1,8 @@
 package edu.se342;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
@@ -10,15 +12,13 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Manager extends Leader<TeamLead> {
     private CountDownLatch office;
-    private List<TeamLead> teamLeaders;
     private MeetingRoom conferenceRoom;
 
     private int elapsedTime;
 
     public Manager(MeetingRoom conferenceRoom, CountDownLatch arriveAtWork) {
         super("", arriveAtWork);
-        this.office = new CountDownLatch(4);
-        this.teamLeaders = new ArrayList<>();
+        this.office = new CountDownLatch(3);
 
         this.conferenceRoom = conferenceRoom;
 
@@ -28,84 +28,88 @@ public class Manager extends Leader<TeamLead> {
     public void run() {
         super.run();
 
-        System.out.println("Project Manager has arrived.");
+        System.out.printf("%s: Project Manager has arrived\n", TimeTracker.currentTimeToString());
 
-        this.office.countDown();
-
-        while (this.office.getCount() > 0) {
-            System.out.println("Project Manager is performing administrivia.");
-
-            elapseTime(TimeHelp.MINUTE.ms());
+        System.out.printf("%s: Project Manager is performing administrivia\n", TimeTracker.currentTimeToString());
+        try {
+            this.office.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        System.out.println("All team leads have arrived. Performing daily stand up");
+        System.out.printf("%s: All team leads have arrived. Performing daily stand up\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 2);
 
-        System.out.println("Project Manager is in an executive meeting");
+        System.out.printf("%s: Project Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.HOUR.ms());
+        System.out.printf("%s: Project Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 4);
 
         while (hasQuestionsToAnswer()) {
             TeamLead questionAsker = answerQuestion();
-            System.out.printf("Project Manager has answered a question from %s\n", questionAsker.getName());
+            System.out.printf("%s: Project Manager has answered a question from %s\n",
+                TimeTracker.currentTimeToString(),
+                questionAsker.getName()
+            );
         }
 
-        System.out.println("Project Manager is going out to lunch");
+        System.out.printf("%s: Project Manager is going out to lunch\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.HOUR.ms());
-        System.out.println("Project Manager is back from lunch");
+        System.out.printf("%s: Project Manager is back from lunch\n", TimeTracker.currentTimeToString());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 6);
 
-        System.out.println("Project Manager is in another executive meeting");
+        System.out.printf("%s: Project Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.HOUR.ms());
+        System.out.printf("%s: Project Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 8);
 
-        conferenceRoom.reserve(13);
-        notifySubordinatesOfMeeting();
+        System.out.printf("%s: Project Manager heading to the  all hands meeting\n", TimeTracker.currentTimeToString());
+
+        conferenceRoom.reserve();
 
         try {
-            conferenceRoom.arriveInRoom();
+            conferenceRoom.arriveInRoom(false);
         } catch (BrokenBarrierException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
+        elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
+        conferenceRoom.leave();
+
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 9);
-        System.out.println("");
+        System.out.printf("%s: Project Manager has left work\n", TimeTracker.currentTimeToString());
     }
 
-    public synchronized void arriveForMorningStandup() throws InterruptedException {
+    public void arriveForMorningStandup() throws InterruptedException {
         this.office.countDown();
         this.office.await();
     }
 
-    public void addTeamLead(TeamLead teamLead) {
-        this.teamLeaders.add(teamLead);
-    }
+    private void performRegularManagerialTasksUntil(long timeInMilliseconds) {
+        boolean stillPerformingAdministrivia = false;
 
-    private void performRegularManagerialTasksUntil(int timeInMilliseconds) {
-        while(this.elapsedTime < timeInMilliseconds) {
+        while(TimeTracker.getCurrentTime() < timeInMilliseconds) {
             TeamLead questionAsker = answerQuestion();
 
             if (questionAsker != null) {
-                System.out.printf("Project Manager has answered a question from %s\n", questionAsker.getName());
-            } else {
-                System.out.println("Project Manager is performing administrivia");
+                System.out.printf("%s: Project Manager has answered a question from %s\n",
+                    TimeTracker.currentTimeToString(),
+                    questionAsker.getName()
+                );
+                stillPerformingAdministrivia = false;
+            } else if (questionAsker == null && !stillPerformingAdministrivia) {
+                System.out.printf("%s: Project Manager is performing administrivia\n", TimeTracker.currentTimeToString());
+                stillPerformingAdministrivia = true;
             }
 
             elapseTime(TimeHelp.MINUTE.ms());
-        }
-    }
-
-    @Override
-    public void notifySubordinatesOfMeeting() {
-        for(TeamLead teamLead : teamLeaders) {
-            teamLead.notifySubordinatesOfMeeting();
         }
     }
 }
