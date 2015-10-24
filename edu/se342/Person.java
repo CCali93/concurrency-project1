@@ -7,12 +7,10 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Person extends Thread {
     private CountDownLatch arriveAtWork;
-    private int elapsedTime;
 
     public Person(String name, CountDownLatch arriveAtWork) {
         super(name);
-        arriveAtWork = arriveAtWork;
-        elapsedTime = 0;
+        this.arriveAtWork = arriveAtWork;
     }
 
     public void run() {
@@ -31,11 +29,5 @@ public class Person extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        elapsedTime += milliseconds;
-    }
-
-    public int getElapsedTime() {
-        return elapsedTime;
     }
 }

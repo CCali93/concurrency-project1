@@ -1,5 +1,8 @@
 package edu.se342;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -9,17 +12,29 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public abstract class Leader<T> extends Person {
     private Queue<T> questionsAsked;
+    private List<T> subordinates;
 
     public Leader(String name, CountDownLatch arriveAtWork) {
         super(name, arriveAtWork);
-        this.questionsAsked = new LinkedBlockingQueue<T>();
+        questionsAsked = new LinkedBlockingQueue<T>();
+        subordinates = new ArrayList<T>();
+    }
+
+    public void addSubordinate(T subordinate) {
+        subordinates.add(subordinate);
+    }
+
+    public int getNumberOfSubordinates() {
+        return subordinates.size();
+    }
+
+    public Iterator<T> getSubordinateIterator() {
+        return subordinates.iterator();
     }
 
     public void requestAnswerForQuestion(T asker) {
         this.questionsAsked.offer(asker);
     }
-
-    public abstract void notifySubordinatesOfMeeting();
 
     protected boolean hasQuestionsToAnswer() {
         return !questionsAsked.isEmpty();
@@ -28,5 +43,4 @@ public abstract class Leader<T> extends Person {
     protected T answerQuestion() {
         return this.questionsAsked.poll();
     }
-
 }

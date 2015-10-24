@@ -1,6 +1,7 @@
 package edu.se342;
 
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 
 /**
@@ -8,14 +9,16 @@ import java.util.concurrent.CyclicBarrier;
  */
 public class MeetingRoom {
     private boolean isReserved;
-    private CyclicBarrier waitingForMeeting;
+    private CyclicBarrier standupMeeting;
+    private CountDownLatch allHandsMeeting;
 
     public MeetingRoom() {
         isReserved = false;
-        waitingForMeeting = new CyclicBarrier(4);
+        standupMeeting = new CyclicBarrier(4);
+        allHandsMeeting = new CountDownLatch(13);
     }
 
-    public synchronized void reserve(int attending) {
+    public synchronized void reserve() {
         try {
             while (isReserved) {
                 wait();
@@ -24,13 +27,9 @@ public class MeetingRoom {
             e.printStackTrace();
         }
 
-        if(attending != waitingForMeeting.getParties()) {
-            waitingForMeeting = new CyclicBarrier(attending);
-        }
+        standupMeeting.reset();
 
         isReserved = true;
-
-        notifyAll();
     }
 
     public synchronized void leave() {
@@ -38,8 +37,13 @@ public class MeetingRoom {
         notifyAll();
     }
 
-    public synchronized void arriveInRoom() throws BrokenBarrierException, InterruptedException {
-        waitingForMeeting.await();
+    public void arriveInRoom(boolean arrivingForStandup) throws BrokenBarrierException, InterruptedException {
+        if(arrivingForStandup) {
+            standupMeeting.await();
+        } else {
+            allHandsMeeting.countDown();
+            allHandsMeeting.await();
+        }
     }
 
 
