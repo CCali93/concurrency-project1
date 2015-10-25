@@ -155,6 +155,7 @@ public class TeamLead extends Leader<Developer> {
     }
     
     private void performRegularTasks(long timeInMilliseconds) {
+        Random random = new Random();
         boolean stillCodingAndTesting = false;
 
         while(TimeTracker.getCurrentTime() < timeInMilliseconds) {
@@ -163,7 +164,7 @@ public class TeamLead extends Leader<Developer> {
             if (questionAsker != null) {
                 stillCodingAndTesting = false;
 
-                int probability = (int)((Math.random() * 1) + 1);
+                int probability = random.nextInt(2);
 
                 if (probability == 1) {
                     System.out.printf(

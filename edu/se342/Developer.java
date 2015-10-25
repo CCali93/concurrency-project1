@@ -67,8 +67,13 @@ public class Developer extends Person {
             System.out.printf("%s: %s is developing until lunch break.\n", TimeTracker.currentTimeToString(), getName());
             // Wait until lunch
             while (TimeTracker.getCurrentTime() < TimeHelp.HOUR.ms() * 4) {
+                int probability = rand.nextInt(5);
+
+                if (probability == 1) {
+                    askQuestion();
+                }
+
                 elapseTime(TimeHelp.MINUTE.ms());
-                // TODO asking a question
             }
 
             /*--------LUNCH BREAK-------*/
@@ -81,9 +86,14 @@ public class Developer extends Person {
 
             /*--------WAIT UNTIL 4pm MEETING-------*/
             System.out.printf("%s: %s is developing until the all hands meeting.\n", TimeTracker.currentTimeToString(), getName());
-            while (TimeTracker.getCurrentTime() < (TimeHelp.HOUR.ms() * 8)) { // If it isn't 4pm yet,
+            while (TimeTracker.getCurrentTime() < (TimeHelp.HOUR.ms() * 8)) { // If it isn't 4pm yet,\
+                int probability = rand.nextInt(25);
+
+                if (probability == 1) {
+                    askQuestion();
+                }
+
                 Thread.sleep(TimeHelp.MINUTE.ms()); // Wait a minute
-                // TODO asking a question
             }
 
             System.out.printf("%s: %s is going to the all hands meeting\n", TimeTracker.currentTimeToString(), getName());
