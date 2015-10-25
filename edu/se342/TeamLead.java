@@ -1,36 +1,14 @@
 package edu.se342;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import java.util.ArrayList;
-
-import java.util.List;
-import java.util.ArrayList;
->>>>>>> Create workflow for TeamLead
-import java.util.List;
-
-=======
-import java.sql.Time;
-import java.util.*;
-
->>>>>>> Workflow for everything except questions is working
+import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.ArrayList;
 
 /**
  * Created by curtis on 10/16/15.
  */
 public class TeamLead extends Leader<Developer> {
-<<<<<<< HEAD
-    private final CountDownLatch teamArrival;
-    private CountDownLatch teamArrival;
-=======
     private volatile boolean isInConferenceRoom;
->>>>>>> Workflow for everything except questions is working
 
     private CountDownLatch teamArrival;
     private Manager manager;
@@ -40,16 +18,8 @@ public class TeamLead extends Leader<Developer> {
         super(leadName, arriveAtWork);
         this.conferenceRoom = conferenceRoom;
 
-<<<<<<< HEAD
-        teamArrival = new CountDownLatch(4);
-
-        this.myDevs = new ArrayList<>();
-        teamArrival = new CountDownLatch(4);
-
-=======
         teamArrival = new CountDownLatch(3);
         isInConferenceRoom = false;
->>>>>>> Workflow for everything except questions is working
     }
 
     public void run() {
@@ -141,16 +111,10 @@ public class TeamLead extends Leader<Developer> {
         this.manager = manager;
     }
 
-    @Override
-    public void notifySubordinatesOfMeeting() {
-        for (Developer dev : myDevs) {
-            //TODO: tell devs to go to the conference room
-        }
-
+    public void arriveForMeeting() {
+        teamArrival.countDown();
         try {
-            conferenceRoom.arriveInRoom();
-        } catch (BrokenBarrierException e) {
-            e.printStackTrace();
+            teamArrival.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
