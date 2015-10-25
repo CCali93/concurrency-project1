@@ -26,10 +26,6 @@ public class TimeTracker {
         return (System.currentTimeMillis() - startTime);
     }
 
-    public static synchronized long getStartTime() {
-        return startTime;
-    }
-
     /**
      * Return the string value of a time, given how many milliseconds it is into the day
      *

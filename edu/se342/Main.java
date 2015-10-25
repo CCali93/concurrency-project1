@@ -37,8 +37,8 @@ public class Main {
         }
 
         try {
-            startSignal.await();
             officeClock.startDay();
+            startSignal.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
