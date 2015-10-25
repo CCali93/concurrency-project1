@@ -1,9 +1,3 @@
-package edu.se342;
-
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 
@@ -16,8 +10,8 @@ public class Manager extends Leader<TeamLead> {
 
     private int elapsedTime;
 
-    public Manager(MeetingRoom conferenceRoom, CountDownLatch arriveAtWork) {
-        super("", arriveAtWork);
+    public Manager(MeetingRoom conferenceRoom, CountDownLatch arriveAtWork, StatsGatherer logger) {
+        super("", arriveAtWork, logger);
         this.office = new CountDownLatch(3);
 
         this.conferenceRoom = conferenceRoom;
@@ -28,47 +22,52 @@ public class Manager extends Leader<TeamLead> {
     public void run() {
         super.run();
 
-        System.out.printf("%s: Project Manager has arrived\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s Manager has arrived\n", TimeTracker.currentTimeToString());
 
-        System.out.printf("%s: Project Manager is performing administrivia\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s Manager is performing administrivia\n", TimeTracker.currentTimeToString());
         try {
             this.office.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        System.out.printf("%s: All team leads have arrived. Performing daily stand up\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s Manager is attending daily stand up\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
+        logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 2);
 
-        System.out.printf("%s: Project Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.HOUR.ms());
-        System.out.printf("%s: Project Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
+        logMeetingTime(TimeHelp.HOUR.ms());
+        System.out.printf("%s Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 4);
 
         while (hasQuestionsToAnswer()) {
-            TeamLead questionAsker = answerQuestion();
-            System.out.printf("%s: Project Manager has answered a question from %s\n",
+            Question<TeamLead> question = answerQuestion();
+            System.out.printf("%s Manager has answered a question from %s\n",
                 TimeTracker.currentTimeToString(),
-                questionAsker.getName()
+                question.getAsker().getName()
             );
+            logWaitForQuestionsTime(TimeTracker.getCurrentTime() - question.getStartTime());
         }
 
-        System.out.printf("%s: Project Manager is going out to lunch\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s Manager is going out to lunch\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.HOUR.ms());
-        System.out.printf("%s: Project Manager is back from lunch\n", TimeTracker.currentTimeToString());
+        logLunchBreakTime(TimeHelp.HOUR.ms());
+        System.out.printf("%s Manager is back from lunch\n", TimeTracker.currentTimeToString());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 6);
 
-        System.out.printf("%s: Project Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.HOUR.ms());
-        System.out.printf("%s: Project Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
+        logMeetingTime(TimeHelp.HOUR.ms());
+        System.out.printf("%s Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 8);
 
-        System.out.printf("%s: Project Manager heading to the  all hands meeting\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s Manager heading to the  all hands meeting\n", TimeTracker.currentTimeToString());
 
         conferenceRoom.reserve();
 
@@ -81,10 +80,11 @@ public class Manager extends Leader<TeamLead> {
         }
 
         elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
+        logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
         conferenceRoom.leave();
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 9);
-        System.out.printf("%s: Project Manager has left work\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s Manager has left work for the day\n", TimeTracker.currentTimeToString());
     }
 
     public void arriveForMorningStandup() throws InterruptedException {
@@ -96,13 +96,14 @@ public class Manager extends Leader<TeamLead> {
         boolean stillPerformingAdministrivia = false;
 
         while(TimeTracker.getCurrentTime() < timeInMilliseconds) {
-            TeamLead questionAsker = null;
+            Question<TeamLead> question;
 
-            while((questionAsker = answerQuestion()) != null) {
+            while((question = answerQuestion()) != null) {
                 System.out.printf("%s: Project Manager has answered a question from %s\n",
                         TimeTracker.currentTimeToString(),
-                        questionAsker.getName()
+                        question.getAsker().getName()
                 );
+                logWaitForQuestionsTime(TimeTracker.getCurrentTime() - question.getStartTime());
                 stillPerformingAdministrivia = false;
             }
 
@@ -111,6 +112,7 @@ public class Manager extends Leader<TeamLead> {
                 stillPerformingAdministrivia = true;
             }
 
+            logWorkingTime(TimeHelp.MINUTE.ms());
             elapseTime(TimeHelp.MINUTE.ms());
         }
     }
