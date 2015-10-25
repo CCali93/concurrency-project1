@@ -1,5 +1,3 @@
-package edu.se342;
-
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -20,18 +18,16 @@ public class Main {
         for (int i = 1; i <= 3; i++) {
             TeamLead leader = new TeamLead(String.format("TeamLead %d%d", i, 1), conferenceRoom, startSignal); // TeamLead (Team, EmployeeNumber)
             leader.setManager(pm);
-            pm.addSubordinate(leader);
             leader.start();
 
             // Create developers for each lead
             for (int j = 2; j <= 4; j++) { // Developer number 2 - 4
-                Developer dev = new Developer(
+                Employee dev = new Employee(
                     String.format("Developer %d%d", i, j),
                     startSignal,
                     conferenceRoom
                 ); // Developer (TeamNumber, EmployeeNumber)
                 dev.setTeamLead(leader);
-                leader.addSubordinate(dev);
                 dev.start();
             }
         }

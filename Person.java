@@ -1,5 +1,3 @@
-package edu.se342;
-
 import java.util.concurrent.CountDownLatch;
 
 /**

@@ -1,5 +1,3 @@
-package edu.se342;
-
 /**
  * @author amc9732
  *         Helps convert real time to simulation time

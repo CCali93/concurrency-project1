@@ -1,5 +1,3 @@
-package edu.se342;
-
 /**
  * Created by austin on 10/23/15.
  */
