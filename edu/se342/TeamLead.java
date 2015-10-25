@@ -125,11 +125,9 @@ public class TeamLead extends Leader<Developer> {
         boolean stillCodingAndTesting = false;
 
         while(TimeTracker.getCurrentTime() < timeInMilliseconds) {
-            Developer questionAsker = answerQuestion();
+            Developer questionAsker = null;//answerQuestion();
 
-            if (questionAsker != null) {
-                stillCodingAndTesting = false;
-
+            while((questionAsker = answerQuestion()) != null) {
                 int probability = random.nextInt(2);
 
                 if (probability == 1) {
@@ -147,9 +145,13 @@ public class TeamLead extends Leader<Developer> {
                     );
                     manager.requestAnswerForQuestion(this);
                 }
-            } else if (questionAsker == null && !stillCodingAndTesting) {
-                System.out.printf("%s: %s is coding and testing\n", TimeTracker.currentTimeToString(), getName());
-                stillCodingAndTesting = true;
+
+                stillCodingAndTesting = false;
+            }
+
+            if (!hasQuestionsToAnswer() && !stillCodingAndTesting) {
+               System.out.printf("%s: %s is coding and testing\n", TimeTracker.currentTimeToString(), getName());
+               stillCodingAndTesting = true;
             }
 
             elapseTime(TimeHelp.MINUTE.ms());

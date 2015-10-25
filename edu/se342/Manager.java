@@ -96,15 +96,17 @@ public class Manager extends Leader<TeamLead> {
         boolean stillPerformingAdministrivia = false;
 
         while(TimeTracker.getCurrentTime() < timeInMilliseconds) {
-            TeamLead questionAsker = answerQuestion();
+            TeamLead questionAsker = null;
 
-            if (questionAsker != null) {
+            while((questionAsker = answerQuestion()) != null) {
                 System.out.printf("%s: Project Manager has answered a question from %s\n",
-                    TimeTracker.currentTimeToString(),
-                    questionAsker.getName()
+                        TimeTracker.currentTimeToString(),
+                        questionAsker.getName()
                 );
                 stillPerformingAdministrivia = false;
-            } else if (questionAsker == null && !stillPerformingAdministrivia) {
+            }
+
+            if (!hasQuestionsToAnswer() && !stillPerformingAdministrivia) {
                 System.out.printf("%s: Project Manager is performing administrivia\n", TimeTracker.currentTimeToString());
                 stillPerformingAdministrivia = true;
             }
