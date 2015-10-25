@@ -87,7 +87,7 @@ public class Developer extends Person {
             /*--------WAIT UNTIL 4pm MEETING-------*/
             System.out.printf("%s: %s is developing until the all hands meeting.\n", TimeTracker.currentTimeToString(), getName());
             while (TimeTracker.getCurrentTime() < (TimeHelp.HOUR.ms() * 8)) { // If it isn't 4pm yet,\
-                int probability = rand.nextInt(25);
+                int probability = rand.nextInt(100);
 
                 if (probability == 1) {
                     askQuestion();

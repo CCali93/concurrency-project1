@@ -55,7 +55,9 @@ public class TeamLead extends Leader<Developer> {
     public void run() {
         super.run();
 
-        int sleepTime = (int) (Math.random() * (TimeHelp.HALF_HOUR.ms() + 1));
+        Random random = new Random();
+
+        int sleepTime = random.nextInt(TimeHelp.HALF_HOUR.ms() + 1);
 
         elapseTime(sleepTime);
 
@@ -100,7 +102,7 @@ public class TeamLead extends Leader<Developer> {
 
         performRegularTasks((int)(TimeHelp.HOUR.ms() * 4.5));
 
-        int breakTime = (int)((Math.random() * TimeHelp.HALF_HOUR.ms()) + TimeHelp.HALF_HOUR.ms());
+        int breakTime = random.nextInt(30) + 30;
         System.out.printf("%s: %s is taking a lunch break\n", TimeTracker.currentTimeToString(), getName());
         elapseTime(breakTime);
         System.out.printf("%s: %s has returned from lunch break\n", TimeTracker.currentTimeToString(), getName());
@@ -125,7 +127,7 @@ public class TeamLead extends Leader<Developer> {
 
         System.out.printf("%s: %s has left the all hands meeting\n", TimeTracker.currentTimeToString(), getName());
 
-        int remainingWorkTime = (int)((Math.random() * 45) + 1);
+        int remainingWorkTime = random.nextInt(46);
 
         performRegularTasks(TimeTracker.getCurrentTime() + remainingWorkTime);
         System.out.printf("%s: %s has left work for the day\n", TimeTracker.currentTimeToString(), getName());
