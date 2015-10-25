@@ -101,7 +101,7 @@ public class TeamLead extends Leader<Employee> {
 
         int remainingWorkTime = random.nextInt(46);
 
-        performRegularTasks(TimeTracker.getCurrentTime() + remainingWorkTime);
+        performRegularTasks(TimeTracker.getCurrentTime() + (remainingWorkTime * TimeHelp.MINUTE.ms()));
         System.out.printf("%s %s has left work for the day\n", TimeTracker.currentTimeToString(), getName());
     }
 

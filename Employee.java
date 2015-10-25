@@ -1,3 +1,4 @@
+import java.sql.Time;
 import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
@@ -104,7 +105,7 @@ public class Employee extends Person {
 
             System.out.printf("%s %s is developing for the rest of the day\n", TimeTracker.currentTimeToString(), getName());
             int remainingWorkTime = (int)((Math.random() * 45) + 1);
-            elapseTime(remainingWorkTime);
+            elapseTime(remainingWorkTime * TimeHelp.MINUTE.ms());
 
             System.out.printf("%s %s has left work for the day\n", TimeTracker.currentTimeToString(), getName());
         } catch (InterruptedException e) {
