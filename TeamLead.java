@@ -12,8 +12,8 @@ public class TeamLead extends Leader<Employee> {
     private Manager manager;
     private MeetingRoom conferenceRoom;
 
-    public TeamLead(String leadName, MeetingRoom conferenceRoom, CountDownLatch arriveAtWork) {
-        super(leadName, arriveAtWork);
+    public TeamLead(String leadName, MeetingRoom conferenceRoom, CountDownLatch arriveAtWork, StatsGatherer logger) {
+        super(leadName, arriveAtWork, logger);
         this.conferenceRoom = conferenceRoom;
 
         teamArrival = new CountDownLatch(3);
@@ -39,6 +39,7 @@ public class TeamLead extends Leader<Employee> {
 
         System.out.printf("%s %s is in Morning Standup\n", TimeTracker.currentTimeToString(),getName());
         elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
+        logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
         System.out.printf("%s %s has left Morning Standup\n", TimeTracker.currentTimeToString(),getName());
 
         try {
@@ -65,6 +66,7 @@ public class TeamLead extends Leader<Employee> {
         }
 
         elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
+        logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
         conferenceRoom.leave();
         isInConferenceRoom = false;
 
@@ -74,6 +76,7 @@ public class TeamLead extends Leader<Employee> {
         System.out.printf("%s %s is taking a lunch break\n", TimeTracker.currentTimeToString(), getName());
         elapseTime(breakTime);
         System.out.printf("%s %s has returned from lunch break\n", TimeTracker.currentTimeToString(), getName());
+        logLunchBreakTime(breakTime);
 
         performRegularTasks(TimeHelp.HOUR.ms() * 8);
 
@@ -92,6 +95,7 @@ public class TeamLead extends Leader<Employee> {
         }
 
         elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
+        logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
 
         System.out.printf("%s %s has left the all hands meeting\n", TimeTracker.currentTimeToString(), getName());
 
@@ -123,9 +127,9 @@ public class TeamLead extends Leader<Employee> {
         boolean stillCodingAndTesting = false;
 
         while(TimeTracker.getCurrentTime() < timeInMilliseconds) {
-            Employee questionAsker = null;
+            Question<Employee> question;
 
-            while((questionAsker = answerQuestion()) != null) {
+            while((question = answerQuestion()) != null) {
                 int probability = random.nextInt(2);
 
                 if (probability == 1) {
@@ -133,8 +137,9 @@ public class TeamLead extends Leader<Employee> {
                         "%s %s has answered a question from %s\n",
                         TimeTracker.currentTimeToString(),
                         getName(),
-                        questionAsker.getName()
+                        question.getAsker().getName()
                     );
+                    logWaitForQuestionsTime(0);
                 } else {
                     System.out.printf("%s %s cannot answer the question, %s asks the Project Manager\n",
                         TimeTracker.currentTimeToString(),
@@ -152,6 +157,7 @@ public class TeamLead extends Leader<Employee> {
                stillCodingAndTesting = true;
             }
 
+            logWorkingTime(TimeHelp.MINUTE.ms());
             elapseTime(TimeHelp.MINUTE.ms());
         }
     }

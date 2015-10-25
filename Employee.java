@@ -14,8 +14,8 @@ public class Employee extends Person {
      *
      * @param name - name of this dev
      */
-    public Employee(String name, CountDownLatch arriveAtWork, MeetingRoom conferenceRoom) {
-        super(name, arriveAtWork);
+    public Employee(String name, CountDownLatch arriveAtWork, MeetingRoom conferenceRoom, StatsGatherer logger) {
+        super(name, arriveAtWork, logger);
         this.conferenceRoom = conferenceRoom;
     }
 
@@ -53,6 +53,7 @@ public class Employee extends Person {
 
             conferenceRoom.arriveInRoom(true);
             elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
+            logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
 
             System.out.printf("%s %s is leaving Team Meeting\n", TimeTracker.currentTimeToString(), getName());
 
@@ -66,6 +67,7 @@ public class Employee extends Person {
                     askQuestion();
                 }
 
+                logWorkingTime(TimeHelp.MINUTE.ms());
                 elapseTime(TimeHelp.MINUTE.ms());
             }
 
@@ -77,6 +79,8 @@ public class Employee extends Person {
 
             System.out.println(TimeTracker.currentTimeToString() + ": " + getName() + " finished eating lunch.");
 
+            logLunchBreakTime(breakTime);
+
             /*--------WAIT UNTIL 4pm MEETING-------*/
             System.out.printf("%s %s is developing until the all hands meeting.\n", TimeTracker.currentTimeToString(), getName());
             while (TimeTracker.getCurrentTime() < (TimeHelp.HOUR.ms() * 8)) { // If it isn't 4pm yet,\
@@ -86,6 +90,7 @@ public class Employee extends Person {
                     askQuestion();
                 }
 
+                logWorkingTime(TimeHelp.MINUTE.ms());
                 Thread.sleep(TimeHelp.MINUTE.ms()); // Wait a minute
             }
 
@@ -93,8 +98,9 @@ public class Employee extends Person {
 
             conferenceRoom.arriveInRoom(false);
             elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
+            logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
 
-            System.out.printf("%s %s has finished last meeting.%n", TimeTracker.currentTimeToString(), getName());
+            System.out.printf("%s %s has left the all hands meeting.%n", TimeTracker.currentTimeToString(), getName());
 
             System.out.printf("%s %s is developing for the rest of the day\n", TimeTracker.currentTimeToString(), getName());
             int remainingWorkTime = (int)((Math.random() * 45) + 1);

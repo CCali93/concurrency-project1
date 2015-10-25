@@ -5,10 +5,12 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Person extends Thread {
     private CountDownLatch arriveAtWork;
+    private StatsGatherer logger;
 
-    public Person(String name, CountDownLatch arriveAtWork) {
+    public Person(String name, CountDownLatch arriveAtWork, StatsGatherer logger) {
         super(name);
         this.arriveAtWork = arriveAtWork;
+        this.logger = logger;
     }
 
     public void run() {
@@ -21,11 +23,27 @@ public class Person extends Thread {
         }
     }
 
-    public void elapseTime(int milliseconds) {
+    public void elapseTime(long milliseconds) {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void logWorkingTime(long milliseconds) {
+        logger.addWorkingTime(milliseconds);
+    }
+
+    public void logLunchBreakTime(long milliseconds) {
+        logger.addLunchBreakTime(milliseconds);
+    }
+
+    public void logMeetingTime(long milliseconds) {
+        logger.addMeetingTime(milliseconds);
+    }
+
+    public void logWaitForQuestionsTime(long milliseconds) {
+        logger.addWaitingForQuestionTime(milliseconds);
     }
 }

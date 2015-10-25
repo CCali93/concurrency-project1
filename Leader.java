@@ -10,22 +10,22 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Curtis on 10/21/2015.
  */
 public abstract class Leader<T> extends Person {
-    private Queue<T> questionsAsked;
+    private Queue<Question<T>> questionsAsked;
 
-    public Leader(String name, CountDownLatch arriveAtWork) {
-        super(name, arriveAtWork);
-        questionsAsked = new LinkedBlockingQueue<T>();
+    public Leader(String name, CountDownLatch arriveAtWork, StatsGatherer logger) {
+        super(name, arriveAtWork, logger);
+        questionsAsked = new LinkedBlockingQueue<Question<T>>();
     }
 
     public void requestAnswerForQuestion(T asker) {
-        this.questionsAsked.offer(asker);
+        this.questionsAsked.offer(new Question(TimeTracker.getCurrentTime(), asker));
     }
 
     protected boolean hasQuestionsToAnswer() {
         return !questionsAsked.isEmpty();
     }
 
-    protected T answerQuestion() {
+    protected Question<T> answerQuestion() {
         return this.questionsAsked.poll();
     }
 }
