@@ -6,14 +6,6 @@ public class TimeTracker {
     private long firstStart; // Time that the first meeting of the day has started
     private long lastStart; // Time that the last meeting of the day has started
 
-    /**
-     *
-     */
-    public TimeTracker() {
-        //TODO what times should these be?
-        firstStart = 0;
-        lastStart = -1;
-    }
 
     /**
      * Gets the number of milliseconds since the start of the day
@@ -66,13 +58,5 @@ public class TimeTracker {
         startTime = System.currentTimeMillis();
     }
 
-    /**
-     * Check if all meetings for the day have concluded
-     *
-     * @return true if last meeting of the day has finished
-     */
-    public synchronized boolean isLastMeetingDone() {
-        return !(lastStart == (-1) || getCurrentTime() - lastStart < TimeHelp.MINUTE.ms() * 15);
-    }
 
 }

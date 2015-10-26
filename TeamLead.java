@@ -29,7 +29,7 @@ public class TeamLead extends Leader<Employee> {
 
         elapseTime(sleepTime);
 
-        System.out.printf("%s %s has arrived at work\n", TimeTracker.currentTimeToString(), getName());
+        System.out.printf("%s: %s has arrived at work\n", TimeTracker.currentTimeToString(), getName());
 
         try {
             manager.arriveForMorningStandup();
@@ -37,10 +37,10 @@ public class TeamLead extends Leader<Employee> {
             e.printStackTrace();
         }
 
-        System.out.printf("%s %s is in Morning Standup\n", TimeTracker.currentTimeToString(),getName());
+        System.out.printf("%s: %s is in Morning Standup\n", TimeTracker.currentTimeToString(), getName());
         elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
         logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
-        System.out.printf("%s %s has left Morning Standup\n", TimeTracker.currentTimeToString(),getName());
+        System.out.printf("%s: %s has left Morning Standup\n", TimeTracker.currentTimeToString(), getName());
 
         try {
             teamArrival.await();
@@ -50,7 +50,7 @@ public class TeamLead extends Leader<Employee> {
 
         conferenceRoom.reserve();
         System.out.printf(
-                "%s %s has reserved the conference room for morning meeting\n",
+                "%s: %s has reserved the conference room for morning meeting\n",
                 TimeTracker.currentTimeToString(),
                 getName()
         );
@@ -59,9 +59,7 @@ public class TeamLead extends Leader<Employee> {
 
         try {
             conferenceRoom.arriveInRoom(true);
-        } catch (BrokenBarrierException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (BrokenBarrierException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -73,36 +71,34 @@ public class TeamLead extends Leader<Employee> {
         performRegularTasks((int)(TimeHelp.HOUR.ms() * 4.5));
 
         int breakTime = random.nextInt(30) + 30;
-        System.out.printf("%s %s is taking a lunch break\n", TimeTracker.currentTimeToString(), getName());
+        System.out.printf("%s: %s is taking a lunch break\n", TimeTracker.currentTimeToString(), getName());
         elapseTime(breakTime);
-        System.out.printf("%s %s has returned from lunch break\n", TimeTracker.currentTimeToString(), getName());
+        System.out.printf("%s: %s has returned from lunch break\n", TimeTracker.currentTimeToString(), getName());
         logLunchBreakTime(breakTime);
 
         performRegularTasks(TimeHelp.HOUR.ms() * 8);
 
         System.out.printf(
-            "%s %s is going to the daily all hands meetings\n",
+                "%s: %s is going to the daily all hands meetings\n",
             TimeTracker.currentTimeToString(),
             getName()
         );
 
         try {
             conferenceRoom.arriveInRoom(false);
-        } catch (BrokenBarrierException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (BrokenBarrierException | InterruptedException e) {
             e.printStackTrace();
         }
 
         elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
         logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
 
-        System.out.printf("%s %s has left the all hands meeting\n", TimeTracker.currentTimeToString(), getName());
+        System.out.printf("%s: %s has left the all hands meeting\n", TimeTracker.currentTimeToString(), getName());
 
         int remainingWorkTime = random.nextInt(46);
 
         performRegularTasks(TimeTracker.getCurrentTime() + (remainingWorkTime * TimeHelp.MINUTE.ms()));
-        System.out.printf("%s %s has left work for the day\n", TimeTracker.currentTimeToString(), getName());
+        System.out.printf("%s: %s has left work for the day\n", TimeTracker.currentTimeToString(), getName());
     }
 
     public synchronized boolean isInConferenceRoom() {
@@ -134,14 +130,14 @@ public class TeamLead extends Leader<Employee> {
 
                 if (probability == 1) {
                     System.out.printf(
-                        "%s %s has answered a question from %s\n",
+                            "%s: %s has answered a question from %s\n",
                         TimeTracker.currentTimeToString(),
                         getName(),
                         question.getAsker().getName()
                     );
                     logWaitForQuestionsTime(0);
                 } else {
-                    System.out.printf("%s %s cannot answer the question, %s asks the Project Manager\n",
+                    System.out.printf("%s: %s cannot answer the question, %s asks the Project Manager\n",
                         TimeTracker.currentTimeToString(),
                         getName(),
                         getName()

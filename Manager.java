@@ -22,60 +22,58 @@ public class Manager extends Leader<TeamLead> {
     public void run() {
         super.run();
 
-        System.out.printf("%s Manager has arrived\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager has arrived\n", TimeTracker.currentTimeToString());
 
-        System.out.printf("%s Manager is performing administrivia\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager is performing administrivia\n", TimeTracker.currentTimeToString());
         try {
             this.office.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        System.out.printf("%s Manager is attending daily stand up\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager is attending daily stand up\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
         logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 2);
 
-        System.out.printf("%s Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.HOUR.ms());
         logMeetingTime(TimeHelp.HOUR.ms());
-        System.out.printf("%s Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 4);
 
         while (hasQuestionsToAnswer()) {
             Question<TeamLead> question = answerQuestion();
-            System.out.printf("%s Manager has answered a question from %s\n",
+            System.out.printf("%s: Manager has answered a question from %s\n",
                 TimeTracker.currentTimeToString(),
                 question.getAsker().getName()
             );
             logWaitForQuestionsTime(TimeTracker.getCurrentTime() - question.getStartTime());
         }
 
-        System.out.printf("%s Manager is going out to lunch\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager is going out to lunch\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.HOUR.ms());
         logLunchBreakTime(TimeHelp.HOUR.ms());
-        System.out.printf("%s Manager is back from lunch\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager is back from lunch\n", TimeTracker.currentTimeToString());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 6);
 
-        System.out.printf("%s Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager is in an executive meeting\n", TimeTracker.currentTimeToString());
         elapseTime(TimeHelp.HOUR.ms());
         logMeetingTime(TimeHelp.HOUR.ms());
-        System.out.printf("%s Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager has left an executive meeting\n", TimeTracker.currentTimeToString());
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 8);
 
-        System.out.printf("%s Manager heading to the  all hands meeting\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager heading to the  all hands meeting\n", TimeTracker.currentTimeToString());
 
         conferenceRoom.reserve();
 
         try {
             conferenceRoom.arriveInRoom(false);
-        } catch (BrokenBarrierException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (BrokenBarrierException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -84,7 +82,7 @@ public class Manager extends Leader<TeamLead> {
         conferenceRoom.leave();
 
         performRegularManagerialTasksUntil(TimeHelp.HOUR.ms() * 9);
-        System.out.printf("%s Manager has left work for the day\n", TimeTracker.currentTimeToString());
+        System.out.printf("%s: Manager has left work for the day\n", TimeTracker.currentTimeToString());
     }
 
     public void arriveForMorningStandup() throws InterruptedException {

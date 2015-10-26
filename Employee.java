@@ -1,4 +1,3 @@
-import java.sql.Time;
 import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
@@ -44,7 +43,7 @@ public class Employee extends Person {
             elapseTime(rand.nextInt(TimeHelp.HALF_HOUR.ms() + 1));
 
             /*-------ARRIVE AT WORK-------*/
-            System.out.printf("%s %s has arrived to the workplace\n", TimeTracker.currentTimeToString(), getName());
+            System.out.printf("%s: %s has arrived to the workplace\n", TimeTracker.currentTimeToString(), getName());
 
             /*--------WAIT UNTIL TEAM MEETING-------*/
             teamLead.arriveForMeeting(); // Wait until meeting
@@ -56,10 +55,10 @@ public class Employee extends Person {
             elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
             logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
 
-            System.out.printf("%s %s is leaving Team Meeting\n", TimeTracker.currentTimeToString(), getName());
+            System.out.printf("%s: %s is leaving Team Meeting\n", TimeTracker.currentTimeToString(), getName());
 
             /*--------WAIT UNTIL LUNCH BREAK-------*/
-            System.out.printf("%s %s is developing until lunch break.\n", TimeTracker.currentTimeToString(), getName());
+            System.out.printf("%s: %s is developing until lunch break.\n", TimeTracker.currentTimeToString(), getName());
             // Wait until lunch
             while (TimeTracker.getCurrentTime() < TimeHelp.HOUR.ms() * 4) {
                 int probability = rand.nextInt(5);
@@ -83,7 +82,7 @@ public class Employee extends Person {
             logLunchBreakTime(breakTime);
 
             /*--------WAIT UNTIL 4pm MEETING-------*/
-            System.out.printf("%s %s is developing until the all hands meeting.\n", TimeTracker.currentTimeToString(), getName());
+            System.out.printf("%s: %s is developing until the all hands meeting.\n", TimeTracker.currentTimeToString(), getName());
             while (TimeTracker.getCurrentTime() < (TimeHelp.HOUR.ms() * 8)) { // If it isn't 4pm yet,\
                 int probability = rand.nextInt(100);
 
@@ -95,22 +94,20 @@ public class Employee extends Person {
                 Thread.sleep(TimeHelp.MINUTE.ms()); // Wait a minute
             }
 
-            System.out.printf("%s %s is going to the all hands meeting\n", TimeTracker.currentTimeToString(), getName());
+            System.out.printf("%s: %s is going to the all hands meeting\n", TimeTracker.currentTimeToString(), getName());
 
             conferenceRoom.arriveInRoom(false);
             elapseTime(TimeHelp.FIFTEEN_MINUTES.ms());
             logMeetingTime(TimeHelp.FIFTEEN_MINUTES.ms());
 
-            System.out.printf("%s %s has left the all hands meeting.%n", TimeTracker.currentTimeToString(), getName());
+            System.out.printf("%s: %s has left the all hands meeting.%n", TimeTracker.currentTimeToString(), getName());
 
-            System.out.printf("%s %s is developing for the rest of the day\n", TimeTracker.currentTimeToString(), getName());
+            System.out.printf("%s: %s is developing for the rest of the day\n", TimeTracker.currentTimeToString(), getName());
             int remainingWorkTime = (int)((Math.random() * 45) + 1);
             elapseTime(remainingWorkTime * TimeHelp.MINUTE.ms());
 
-            System.out.printf("%s %s has left work for the day\n", TimeTracker.currentTimeToString(), getName());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (BrokenBarrierException e) {
+            System.out.printf("%s: %s has left work for the day\n", TimeTracker.currentTimeToString(), getName());
+        } catch (InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();
         }
     }
@@ -120,11 +117,11 @@ public class Employee extends Person {
      */
     private void askQuestion() {
         System.out.println(TimeTracker.currentTimeToString()
-                + " " + getName() + " is asking a question");
+                + ": " + getName() + " is asking a question");
 
         this.teamLead.requestAnswerForQuestion(this);
 
         System.out.println(TimeTracker.currentTimeToString()
-                + " " + getName() + "'s question was answered.");
+                + ": " + getName() + "'s question was answered.");
     }
 }

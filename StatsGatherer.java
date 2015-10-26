@@ -8,7 +8,7 @@ public class StatsGatherer {
     private Map<String, Long> statistics;
 
     public StatsGatherer() {
-        statistics = new HashMap<String, Long>();
+        statistics = new HashMap<>();
 
         statistics.put("workingTime", 0L);
         statistics.put("lunchBreakTime", 0L);
