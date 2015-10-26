@@ -10,3 +10,24 @@ To Run the Program
 (Also in the root directory)
     java Main
 * A log of the system execution will then appear as the program executes in the command prompt
+
+
+=================================
+Output Format
+=================================
+Output consists of a log of all work activities during the day followed by a print out of
+various statistics from the program execution as follows:
+
+8:00am: Manager has arrived at work
+8:01am: Manager is performing administrivia
+.
+.
+.
+5:00pm: Manager has left work for the day
+
+
+Statistics for this Execution of the Program:
+Average Time Spent Working: 365 minutes
+Average Time Spent in Meetings: 42 minutes
+Average Time Spent on Lunch Break: 39 minutes
+Average Time Spent Waiting for a Question to be Answered: 5.70 minutes
